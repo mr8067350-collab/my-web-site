@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Boss Premium Earning</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boss Project Farming</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
     margin:0;
     font-family:Arial;
-    background:linear-gradient(135deg,#141e30,#243b55);
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
     color:white;
     text-align:center;
 }
 header{
-    padding:15px;
     background:black;
+    padding:15px;
     font-weight:bold;
 }
 nav{
@@ -24,9 +24,9 @@ nav{
 }
 nav button{
     flex:1;
-    padding:12px;
-    background:#111;
+    padding:10px;
     border:none;
+    background:#111;
     color:white;
 }
 nav button:hover{background:#333;}
@@ -48,7 +48,7 @@ nav button:hover{background:#333;}
     border-radius:6px;
     margin:5px;
 }
-.btn:hover{background:darkgreen;}
+.logout{background:red;}
 input{
     padding:8px;
     width:80%;
@@ -56,10 +56,7 @@ input{
     border-radius:6px;
     border:none;
 }
-.logout{
-    background:red;
-}
-.balanceBox{
+.balance{
     font-size:18px;
     margin-top:10px;
 }
@@ -68,69 +65,72 @@ input{
 
 <body>
 
-<header>Boss Premium Earning 💎</header>
+<header>🌾 Boss Project Farming</header>
 
 <!-- LOGIN -->
 <div id="loginPage" class="page active">
-    <h3>Login</h3>
-    <input type="text" id="username" placeholder="Username"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button class="btn" onclick="login()">Login</button>
+<h3>Login</h3>
+<input type="text" id="username" placeholder="Username"><br>
+<input type="password" id="password" placeholder="Password"><br>
+<input type="text" id="refCode" placeholder="Referral Code (Optional)"><br>
+<button class="btn" onclick="login()">Login</button>
 </div>
 
 <!-- MAIN -->
-<div id="mainContent" style="display:none;">
+<div id="main" style="display:none;">
 
 <nav>
-    <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('task')">Task</button>
-    <button onclick="showPage('wallet')">Wallet</button>
-    <button class="logout" onclick="logout()">Logout</button>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('wallet')">Wallet</button>
+<button onclick="showPage('admin')">Admin</button>
+<button class="logout" onclick="logout()">Logout</button>
 </nav>
 
 <!-- HOME -->
 <div id="home" class="page active">
-    <h3>Buy Package</h3>
+<h3>🌾 Project Farming</h3>
 
-    <div class="card">
-        <p>200 টাকা → 🏦 Islamiya Bank</p>
-        <button class="btn" onclick="buyPackage(200)">Buy 200</button>
-    </div>
-
-    <div class="card">
-        <p>500 টাকা → 🥚 Egg</p>
-        <button class="btn" onclick="buyPackage(500)">Buy 500</button>
-    </div>
-
-    <div class="card">
-        <p>1000 টাকা → 🐄 Cow</p>
-        <button class="btn" onclick="buyPackage(1000)">Buy 1000</button>
-    </div>
+<div class="card">
+<h4>Silver Package - 250 Tk</h4>
+<p>10% Cashback</p>
+<p>Daily Income: 11 Tk</p>
+<p>Per Referral: 20 Tk</p>
+<button class="btn" onclick="buyPackage()">Buy Now</button>
 </div>
 
-<!-- TASK -->
-<div id="task" class="page">
-    <h3>Tasks</h3>
-    <div id="taskArea"></div>
+<div class="balance">
+Balance: <span id="balanceDisplay">0</span> Tk
+</div>
+
 </div>
 
 <!-- WALLET -->
 <div id="wallet" class="page">
-    <h3>Wallet</h3>
+<h3>Wallet</h3>
 
-    <div class="card">
-        <input type="number" id="depositAmount" placeholder="Deposit Amount">
-        <button class="btn" onclick="deposit()">Deposit</button>
-    </div>
+<div class="card">
+<input type="number" id="depositAmount" placeholder="Deposit Amount">
+<button class="btn" onclick="deposit()">Deposit</button>
+</div>
 
-    <div class="card">
-        <input type="number" id="withdrawAmount" placeholder="Withdraw Amount">
-        <button class="btn" onclick="withdraw()">Withdraw</button>
-    </div>
+<div class="card">
+<input type="number" id="withdrawAmount" placeholder="Withdraw Amount">
+<button class="btn" onclick="withdraw()">Withdraw</button>
+</div>
 
-    <div class="balanceBox">
-        Balance: <span id="balanceDisplay">0</span> টাকা
-    </div>
+<div class="card">
+<p>Your Referral Code:</p>
+<p id="myRef"></p>
+</div>
+
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="page">
+<h3>Admin Panel</h3>
+<input type="password" id="adminPass" placeholder="Admin Password">
+<button class="btn" onclick="adminAccess()">Enter</button>
+<div id="adminData"></div>
 </div>
 
 </div>
@@ -138,105 +138,99 @@ input{
 <script>
 
 let balance = parseInt(localStorage.getItem("balance")) || 0;
-let packageBought = localStorage.getItem("packageBought") === "true";
-let savedUser = localStorage.getItem("username");
+let packageBought = localStorage.getItem("package") === "true";
+let username = localStorage.getItem("username");
+let myRef = localStorage.getItem("myRef");
 
-if(savedUser){
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("mainContent").style.display="block";
+if(username){
+document.getElementById("loginPage").style.display="none";
+document.getElementById("main").style.display="block";
 }
 
 updateBalance();
-loadTask();
 
 function login(){
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+let ref=document.getElementById("refCode").value;
 
-    if(user && pass){
-        localStorage.setItem("username",user);
-        document.getElementById("loginPage").style.display="none";
-        document.getElementById("mainContent").style.display="block";
-    }else{
-        alert("Enter Username & Password");
-    }
+if(user && pass){
+localStorage.setItem("username",user);
+let refCode="REF"+Math.floor(Math.random()*10000);
+localStorage.setItem("myRef",refCode);
+if(ref){
+balance+=20;
+alert("Referral Bonus 20 Tk Added");
+}
+localStorage.setItem("balance",balance);
+location.reload();
+}else{
+alert("Fill all fields");
+}
 }
 
 function logout(){
-    localStorage.clear();
-    location.reload();
+localStorage.clear();
+location.reload();
 }
 
 function showPage(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if(id==="task") loadTask();
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.getElementById("myRef").innerText=localStorage.getItem("myRef");
 }
 
-function buyPackage(amount){
-    if(balance < amount){
-        alert("Not enough balance!");
-        return;
-    }
-    balance -= amount;
-    packageBought = true;
-    localStorage.setItem("packageBought","true");
-    localStorage.setItem("balance",balance);
-    updateBalance();
-    alert("Package Purchased!");
+function buyPackage(){
+if(balance<250){
+alert("Not enough balance");
+return;
 }
-
-function loadTask(){
-    let area = document.getElementById("taskArea");
-    if(!packageBought){
-        area.innerHTML = "<p style='color:red'>Buy package first!</p>";
-    }else{
-        area.innerHTML = `
-        <div class="card">
-        <p>Complete Task → 10 টাকা</p>
-        <button class="btn" onclick="completeTask()">Do Task</button>
-        </div>
-        `;
-    }
-}
-
-function completeTask(){
-    balance += 10;
-    localStorage.setItem("balance",balance);
-    updateBalance();
-    alert("Task Completed +10 টাকা");
+balance-=250;
+let cashback=25;
+balance+=cashback;
+localStorage.setItem("package","true");
+localStorage.setItem("balance",balance);
+updateBalance();
+alert("Package Activated + 25 Tk Cashback");
 }
 
 function deposit(){
-    let amount = parseInt(document.getElementById("depositAmount").value);
-    if(!amount || amount<=0){
-        alert("Enter valid amount");
-        return;
-    }
-    balance += amount;
-    localStorage.setItem("balance",balance);
-    updateBalance();
-    alert("Deposit Successful");
+let amount=parseInt(document.getElementById("depositAmount").value);
+if(!amount||amount<=0){alert("Enter valid amount");return;}
+balance+=amount;
+localStorage.setItem("balance",balance);
+updateBalance();
+alert("Deposit Success");
 }
 
 function withdraw(){
-    let amount = parseInt(document.getElementById("withdrawAmount").value);
-    if(!amount || amount < 100){
-        alert("Minimum Withdraw 100 টাকা");
-        return;
-    }
-    if(amount > balance){
-        alert("Insufficient Balance");
-        return;
-    }
-    balance -= amount;
-    localStorage.setItem("balance",balance);
-    updateBalance();
-    alert("Withdraw Successful");
+let amount=parseInt(document.getElementById("withdrawAmount").value);
+if(!amount||amount<100){
+alert("Minimum Withdraw 100 Tk");
+return;
+}
+if(amount>balance){
+alert("Insufficient Balance");
+return;
+}
+balance-=amount;
+localStorage.setItem("balance",balance);
+updateBalance();
+alert("Withdraw Success");
 }
 
 function updateBalance(){
-    document.getElementById("balanceDisplay").innerText = balance;
+document.getElementById("balanceDisplay").innerText=balance;
+}
+
+function adminAccess(){
+let pass=document.getElementById("adminPass").value;
+if(pass==="1234"){
+document.getElementById("adminData").innerHTML=
+"<p>Total Balance: "+balance+" Tk</p>";
+}else{
+alert("Wrong Password");
+}
 }
 
 </script>
