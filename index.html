@@ -8,7 +8,7 @@
 body{
     margin:0;
     font-family:Arial;
-    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     color:white;
     text-align:center;
 }
@@ -17,19 +17,6 @@ header{
     padding:15px;
     font-weight:bold;
 }
-nav{
-    display:flex;
-    justify-content:space-around;
-    background:#111;
-}
-nav button{
-    flex:1;
-    padding:10px;
-    border:none;
-    background:#111;
-    color:white;
-}
-nav button:hover{background:#333;}
 .page{display:none;padding:20px;}
 .active{display:block;}
 .card{
@@ -48,8 +35,7 @@ nav button:hover{background:#333;}
     border-radius:6px;
     margin:5px;
 }
-.logout{background:red;}
-input{
+input, select{
     padding:8px;
     width:80%;
     margin:5px;
@@ -70,167 +56,170 @@ input{
 <!-- LOGIN -->
 <div id="loginPage" class="page active">
 <h3>Login</h3>
-<input type="text" id="username" placeholder="Username"><br>
-<input type="password" id="password" placeholder="Password"><br>
-<input type="text" id="refCode" placeholder="Referral Code (Optional)"><br>
+<input type="text" id="loginUser" placeholder="User ID"><br>
+<input type="password" id="loginPass" placeholder="Password"><br>
 <button class="btn" onclick="login()">Login</button>
+
+<h4>Create Account</h4>
+<input type="text" id="newUser" placeholder="New User ID"><br>
+<input type="password" id="newPass" placeholder="New Password"><br>
+<button class="btn" onclick="register()">Register</button>
 </div>
 
 <!-- MAIN -->
-<div id="main" style="display:none;">
+<div id="mainPage" class="page">
 
-<nav>
-<button onclick="showPage('home')">Home</button>
-<button onclick="showPage('wallet')">Wallet</button>
-<button onclick="showPage('admin')">Admin</button>
-<button class="logout" onclick="logout()">Logout</button>
-</nav>
-
-<!-- HOME -->
-<div id="home" class="page active">
-<h3>🌾 Project Farming</h3>
+<h3>🌾 Silver Package - 250 Tk</h3>
+<p>10% Cashback</p>
+<p>Daily Income 11 Tk</p>
+<p>Per Referral 20 Tk</p>
 
 <div class="card">
-<h4>Silver Package - 250 Tk</h4>
-<p>10% Cashback</p>
-<p>Daily Income: 11 Tk</p>
-<p>Per Referral: 20 Tk</p>
-<button class="btn" onclick="buyPackage()">Buy Now</button>
+<button class="btn" onclick="buyPackage()">Buy Package</button>
+</div>
+
+<div class="card">
+<h4>Deposit</h4>
+<select id="depositMethod">
+<option>bKash</option>
+<option>Nagad</option>
+<option>Rocket</option>
+</select><br>
+<input type="number" id="depositAmount" placeholder="Amount">
+<button class="btn" onclick="deposit()">Deposit</button>
+</div>
+
+<div class="card">
+<h4>Withdraw</h4>
+<select id="withdrawMethod">
+<option>bKash</option>
+<option>Nagad</option>
+<option>Rocket</option>
+</select><br>
+<input type="number" id="withdrawAmount" placeholder="Amount">
+<button class="btn" onclick="withdraw()">Withdraw</button>
 </div>
 
 <div class="balance">
 Balance: <span id="balanceDisplay">0</span> Tk
 </div>
 
-</div>
-
-<!-- WALLET -->
-<div id="wallet" class="page">
-<h3>Wallet</h3>
-
-<div class="card">
-<input type="number" id="depositAmount" placeholder="Deposit Amount">
-<button class="btn" onclick="deposit()">Deposit</button>
-</div>
-
-<div class="card">
-<input type="number" id="withdrawAmount" placeholder="Withdraw Amount">
-<button class="btn" onclick="withdraw()">Withdraw</button>
-</div>
-
-<div class="card">
-<p>Your Referral Code:</p>
-<p id="myRef"></p>
-</div>
-
-</div>
-
-<!-- ADMIN -->
-<div id="admin" class="page">
-<h3>Admin Panel</h3>
-<input type="password" id="adminPass" placeholder="Admin Password">
-<button class="btn" onclick="adminAccess()">Enter</button>
-<div id="adminData"></div>
-</div>
+<button class="btn" onclick="logout()">Logout</button>
 
 </div>
 
 <script>
 
-let balance = parseInt(localStorage.getItem("balance")) || 0;
-let packageBought = localStorage.getItem("package") === "true";
-let username = localStorage.getItem("username");
-let myRef = localStorage.getItem("myRef");
+let currentUser=null;
 
-if(username){
-document.getElementById("loginPage").style.display="none";
-document.getElementById("main").style.display="block";
+function register(){
+let user=document.getElementById("newUser").value;
+let pass=document.getElementById("newPass").value;
+
+if(!user||!pass){alert("Fill all fields");return;}
+
+if(localStorage.getItem("user_"+user)){
+alert("User already exists");
+return;
 }
 
-updateBalance();
+let data={
+password:pass,
+balance:0,
+package:false
+};
+
+localStorage.setItem("user_"+user,JSON.stringify(data));
+alert("Account Created");
+}
 
 function login(){
-let user=document.getElementById("username").value;
-let pass=document.getElementById("password").value;
-let ref=document.getElementById("refCode").value;
+let user=document.getElementById("loginUser").value;
+let pass=document.getElementById("loginPass").value;
 
-if(user && pass){
-localStorage.setItem("username",user);
-let refCode="REF"+Math.floor(Math.random()*10000);
-localStorage.setItem("myRef",refCode);
-if(ref){
-balance+=20;
-alert("Referral Bonus 20 Tk Added");
+let data=localStorage.getItem("user_"+user);
+if(!data){alert("User not found");return;}
+
+data=JSON.parse(data);
+
+if(data.password!==pass){
+alert("Wrong password");
+return;
 }
-localStorage.setItem("balance",balance);
-location.reload();
-}else{
-alert("Fill all fields");
-}
+
+currentUser=user;
+document.getElementById("loginPage").classList.remove("active");
+document.getElementById("mainPage").classList.add("active");
+updateBalance();
 }
 
 function logout(){
-localStorage.clear();
+currentUser=null;
 location.reload();
 }
 
-function showPage(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.getElementById("myRef").innerText=localStorage.getItem("myRef");
+function getUserData(){
+return JSON.parse(localStorage.getItem("user_"+currentUser));
+}
+
+function saveUserData(data){
+localStorage.setItem("user_"+currentUser,JSON.stringify(data));
+}
+
+function updateBalance(){
+let data=getUserData();
+document.getElementById("balanceDisplay").innerText=data.balance;
 }
 
 function buyPackage(){
-if(balance<250){
+let data=getUserData();
+if(data.balance<250){
 alert("Not enough balance");
 return;
 }
-balance-=250;
-let cashback=25;
-balance+=cashback;
-localStorage.setItem("package","true");
-localStorage.setItem("balance",balance);
+data.balance-=250;
+data.balance+=25; // 10% cashback
+data.package=true;
+saveUserData(data);
 updateBalance();
-alert("Package Activated + 25 Tk Cashback");
+alert("Package Activated +25 Tk Cashback");
 }
 
 function deposit(){
 let amount=parseInt(document.getElementById("depositAmount").value);
-if(!amount||amount<=0){alert("Enter valid amount");return;}
-balance+=amount;
-localStorage.setItem("balance",balance);
+let method=document.getElementById("depositMethod").value;
+
+if(!amount||amount<=0){
+alert("Enter valid amount");
+return;
+}
+
+let data=getUserData();
+data.balance+=amount;
+saveUserData(data);
 updateBalance();
-alert("Deposit Success");
+alert("Deposit via "+method+" Successful (Demo)");
 }
 
 function withdraw(){
 let amount=parseInt(document.getElementById("withdrawAmount").value);
+let method=document.getElementById("withdrawMethod").value;
+
 if(!amount||amount<100){
 alert("Minimum Withdraw 100 Tk");
 return;
 }
-if(amount>balance){
+
+let data=getUserData();
+if(amount>data.balance){
 alert("Insufficient Balance");
 return;
 }
-balance-=amount;
-localStorage.setItem("balance",balance);
+
+data.balance-=amount;
+saveUserData(data);
 updateBalance();
-alert("Withdraw Success");
-}
-
-function updateBalance(){
-document.getElementById("balanceDisplay").innerText=balance;
-}
-
-function adminAccess(){
-let pass=document.getElementById("adminPass").value;
-if(pass==="1234"){
-document.getElementById("adminData").innerHTML=
-"<p>Total Balance: "+balance+" Tk</p>";
-}else{
-alert("Wrong Password");
-}
+alert("Withdraw via "+method+" Successful (Demo)");
 }
 
 </script>
