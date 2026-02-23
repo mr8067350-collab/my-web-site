@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Boss Earning System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+        }
 
+        header {
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background: #222;
+        }
+
+        nav button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        nav button:hover {
+            background: #444;
+        }
+
+        .page {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            margin: 10px auto;
+            max-width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 8px 15px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: darkgreen;
+        }
+
+        .balance-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>Boss Online Earning 💰</h2>
+</header>
+
+<nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('task')">Task</button>
+    <button onclick="showPage('balance')">Balance</button>
+</nav>
+
+<!-- Home Page -->
+<div id="home" class="page active">
+    <h3>Buy Package</h3>
+
+    <div class="card">
+        <h4>Silver Package</h4>
+        <p>Price: 500 টাকা</p>
+        <button class="btn" onclick="buyPackage(500)">Buy</button>
+    </div>
+
+    <div class="card">
+        <h4>Gold Package</h4>
+        <p>Price: 1000 টাকা</p>
+        <button class="btn" onclick="buyPackage(1000)">Buy</button>
+    </div>
+
+</div>
+
+<!-- Task Page -->
+<div id="task" class="page">
+    <h3>Available Tasks</h3>
+
+    <div class="card">
+        <p>Watch Video - Earn 50 টাকা</p>
+        <button class="btn" onclick="completeTask(50)">Do Task</button>
+    </div>
+
+    <div class="card">
+        <p>Share Post - Earn 30 টাকা</p>
+        <button class="btn" onclick="completeTask(30)">Do Task</button>
+    </div>
+
+</div>
+
+<!-- Balance Page -->
+<div id="balance" class="page">
+    <h3>Your Balance</h3>
+    <div class="balance-box" onclick="showBalance()">
+        Click to See Balance
+        <h2 id="balanceAmount"></h2>
+    </div>
+</div>
+
+<script>
+    let balance = 0;
+    let packageBought = false;
+
+    function showPage(pageId) {
+        let pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    function buyPackage(amount) {
+        alert("Package Purchased: " + amount + " টাকা");
+        packageBought = true;
+    }
+
+    function completeTask(amount) {
+        if(!packageBought){
+            alert("Please buy a package first!");
+            return;
+        }
+        balance += amount;
+        alert("Task Completed! " + amount + " টাকা Added.");
+    }
+
+    function showBalance() {
+        document.getElementById("balanceAmount").textContent = balance + " টাকা";
+    }
+</script>
+
+</body>
+</html>
