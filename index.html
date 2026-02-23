@@ -90,3 +90,163 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Project Farming</title>
+<style>
+body{font-family:Arial;text-align:center;background:#f2f2f2;}
+.box{background:white;width:300px;margin:15px auto;padding:15px;border-radius:10px;box-shadow:0 0 10px #ccc;}
+button{padding:8px 15px;background:green;color:white;border:none;border-radius:5px;}
+.top{background:green;color:white;padding:15px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+🌾 Project Farming <br>
+Balance: <span id="balance">0</span> Tk
+</div>
+
+<div class="box">
+<h3>🥈 Silver - 250 Tk</h3>
+10% Cashback<br>
+Daily 11 Tk<br>
+Referral 20 Tk<br><br>
+<button onclick="buy(250)">Buy</button>
+</div>
+
+<div class="box">
+<h3>🥇 Gold - 550 Tk</h3>
+80 Tk Cashback<br>
+Daily 25 Tk<br>
+Referral 35 Tk<br><br>
+<button onclick="buy(550)">Buy</button>
+</div>
+
+<div class="box">
+<h3>🏆 Platinum - 1050 Tk</h3>
+200 Tk Cashback<br>
+Daily 40 Tk<br>
+Referral 50 Tk<br><br>
+<button onclick="buy(1050)">Buy</button>
+</div>
+
+<div class="box">
+<h3>💎 Diamond - 1550 Tk</h3>
+350 Tk Cashback<br>
+Daily 50 Tk<br>
+Referral 100 Tk<br><br>
+<button onclick="buy(1550)">Buy</button>
+</div>
+
+<div class="box">
+<h3>👑 Premium - 2250 Tk</h3>
+500 Tk Cashback<br>
+Daily 80 Tk<br>
+Referral 150 Tk<br><br>
+<button onclick="buy(2250)">Buy</button>
+</div>
+
+<br>
+<button onclick="location.href='deposit.html'">Deposit</button>
+<button onclick="location.href='withdraw.html'">Withdraw</button>
+
+<script>
+let bal = localStorage.getItem("balance");
+if(!bal){bal=0;}
+document.getElementById("balance").innerText=bal;
+
+function buy(price){
+    if(parseInt(bal) >= price){
+        bal = parseInt(bal) - price;
+        localStorage.setItem("balance", bal);
+        alert("Package Purchased!");
+        location.reload();
+    }else{
+        alert("Not Enough Balance! Please Deposit.");
+    }
+}
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Deposit</title>
+<style>
+body{text-align:center;font-family:Arial;background:#f2f2f2;}
+.box{background:white;width:300px;margin:50px auto;padding:20px;border-radius:10px;}
+button{padding:8px 15px;background:green;color:white;border:none;}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h3>Deposit Money</h3>
+
+bKash / Nagad / Rocket<br><br>
+
+<input type="number" id="amount" placeholder="Enter Amount"><br><br>
+<button onclick="deposit()">Submit</button>
+<br><br>
+<button onclick="location.href='home.html'">Back</button>
+</div>
+
+<script>
+function deposit(){
+    let amount = document.getElementById("amount").value;
+    let bal = localStorage.getItem("balance");
+    if(!bal){bal=0;}
+
+    bal = parseInt(bal) + parseInt(amount);
+    localStorage.setItem("balance", bal);
+
+    alert("Deposit Successful!");
+    location.href="home.html";
+}
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Withdraw</title>
+<style>
+body{text-align:center;font-family:Arial;background:#f2f2f2;}
+.box{background:white;width:300px;margin:50px auto;padding:20px;border-radius:10px;}
+button{padding:8px 15px;background:red;color:white;border:none;}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h3>Withdraw Money</h3>
+
+<input type="number" id="amount" placeholder="Enter Amount"><br><br>
+<button onclick="withdraw()">Withdraw</button>
+<br><br>
+<button onclick="location.href='home.html'">Back</button>
+</div>
+
+<script>
+function withdraw(){
+    let amount = document.getElementById("amount").value;
+    let bal = localStorage.getItem("balance");
+    if(!bal){bal=0;}
+
+    if(parseInt(bal) >= parseInt(amount)){
+        bal = parseInt(bal) - parseInt(amount);
+        localStorage.setItem("balance", bal);
+        alert("Withdraw Successful!");
+        location.href="home.html";
+    }else{
+        alert("Not Enough Balance!");
+    }
+}
+</script>
+
+</body>
+</html>
