@@ -64,193 +64,6 @@
             border:none;
             border-radius:5px;
             cursor:pointer;
-        }
-
-        .btn:hover{
-            background:darkgreen;
-        }
-
-        .balance-box{
-            background:white;
-            color:black;
-            padding:20px;
-            border-radius:10px;
-            display:inline-block;
-            margin-top:20px;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    Boss Online Earning 💰
-</header>
-
-<nav>
-    <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('task')">Task</button>
-    <button onclick="showPage('balance')">Balance</button>
-</nav>
-
-<!-- Home -->
-<div id="home" class="page active">
-    <h3>Buy Package</h3>
-
-    <div class="card">
-        <h4>Silver Package</h4>
-        <p>500 টাকা</p>
-        <button class="btn" onclick="buyPackage(500)">Buy</button>
-    </div>
-
-    <div class="card">
-        <h4>Gold Package</h4>
-        <p>1000 টাকা</p>
-        <button class="btn" onclick="buyPackage(1000)">Buy</button>
-    </div>
-</div>
-
-<!-- Task -->
-<div id="task" class="page">
-    <h3>Available Tasks</h3>
-
-    <div class="card">
-        <p>Watch Video - 50 টাকা</p>
-        <button class="btn" onclick="completeTask(50)">Do Task</button>
-    </div>
-
-    <div class="card">
-        <p>Share Post - 30 টাকা</p>
-        <button class="btn" onclick="completeTask(30)">Do Task</button>
-    </div>
-</div>
-
-<!-- Balance -->
-<div id="balance" class="page">
-    <h3>Your Balance</h3>
-    <div class="balance-box">
-        <h2 id="balanceAmount">0 টাকা</h2>
-        <button class="btn" onclick="withdraw()">Withdraw</button>
-    </div>
-</div>
-
-<script>
-    let balance = localStorage.getItem("balance") 
-        ? parseInt(localStorage.getItem("balance")) 
-        : 0;
-
-    let packageBought = localStorage.getItem("packageBought") === "true";
-
-    updateBalance();
-
-    function showPage(pageId){
-        document.querySelectorAll('.page').forEach(p=>{
-            p.classList.remove('active');
-        });
-        document.getElementById(pageId).classList.add('active');
-    }
-
-    function buyPackage(amount){
-        alert("Package Purchased: " + amount + " টাকা");
-        packageBought = true;
-        localStorage.setItem("packageBought","true");
-    }
-
-    function completeTask(amount){
-        if(!packageBought){
-            alert("Please buy a package first!");
-            return;
-        }
-        balance += amount;
-        localStorage.setItem("balance",balance);
-        updateBalance();
-        alert("Task Completed! +" + amount + " টাকা");
-    }
-
-    function updateBalance(){
-        document.getElementById("balanceAmount").textContent = balance + " টাকা";
-    }
-
-    function withdraw(){
-        if(balance <= 0){
-            alert("No balance available!");
-            return;
-        }
-        alert("Withdraw Request Sent!");
-        balance = 0;
-        localStorage.setItem("balance",balance);
-        updateBalance();
-    }
-</script>
-
-</body>
-</html>
-YaSir panu enginear
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Boss Earning System</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        body{
-            margin:0;
-            font-family:Arial, sans-serif;
-            background:linear-gradient(135deg,#1e3c72,#2a5298);
-            color:white;
-            text-align:center;
-        }
-
-        header{
-            padding:15px;
-            font-size:20px;
-            font-weight:bold;
-            background:#111;
-        }
-
-        nav{
-            display:flex;
-            justify-content:space-around;
-            background:#000;
-        }
-
-        nav button{
-            flex:1;
-            padding:15px;
-            border:none;
-            background:#000;
-            color:white;
-            cursor:pointer;
-        }
-
-        nav button:hover{
-            background:#333;
-        }
-
-        .page{
-            display:none;
-            padding:20px;
-        }
-
-        .active{
-            display:block;
-        }
-
-        .card{
-            background:white;
-            color:black;
-            padding:15px;
-            margin:15px auto;
-            max-width:300px;
-            border-radius:10px;
-        }
-
-        .btn{
-            padding:8px 15px;
-            background:green;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
             margin:5px;
         }
 
@@ -288,7 +101,7 @@ YaSir panu enginear
     <button onclick="showPage('balance')">Balance</button>
 </nav>
 
-<!-- Home Page -->
+<!-- Home Page (All package in one page) -->
 <div id="home" class="page active">
     <h3>Buy Package (Invest)</h3>
 
@@ -332,7 +145,6 @@ YaSir panu enginear
 </div>
 
 <script>
-    // Initial setup
     let balance = localStorage.getItem("balance") 
         ? parseInt(localStorage.getItem("balance")) 
         : 0;
@@ -343,7 +155,6 @@ YaSir panu enginear
     updateBalance();
     toggleTask();
 
-    // Navigation
     function showPage(pageId){
         document.querySelectorAll('.page').forEach(p=>{
             p.classList.remove('active');
@@ -352,7 +163,6 @@ YaSir panu enginear
         if(pageId==='task') toggleTask();
     }
 
-    // Buy package
     function buyPackage(amount,type){
         alert(Package Invested: ${amount} টাকা → ${type==='bank'?'🏦 Islamiya Bank': type==='egg'?'🥚 Egg':'🐄 Cow'});
         packageBought = true;
@@ -362,7 +172,6 @@ YaSir panu enginear
         toggleTask();
     }
 
-    // Unlock tasks
     function toggleTask(){
         const taskDiv = document.getElementById("taskContent");
         if(!packageBought){
@@ -382,7 +191,6 @@ YaSir panu enginear
         }
     }
 
-    // Complete task
     function completeTask(amount){
         if(!packageBought){
             alert("Please buy a package first!");
@@ -394,7 +202,6 @@ YaSir panu enginear
         alert("Task Completed! +" + amount + " টাকা");
     }
 
-    // Deposit money
     function deposit(){
         let amount = parseInt(document.getElementById("depositAmount").value);
         if(isNaN(amount) || amount <= 0){
@@ -408,7 +215,6 @@ YaSir panu enginear
         alert(amount + " টাকা Deposit Successful!");
     }
 
-    // Withdraw money
     function withdraw(){
         if(balance < 100){
             alert("আপনার balance কম, Withdraw করতে হলে কমপক্ষে 100 টাকা থাকতে হবে!");
@@ -432,11 +238,9 @@ YaSir panu enginear
         alert(amount + " টাকা Withdraw Successful!");
     }
 
-    // Update balance on UI
     function updateBalance(){
         document.getElementById("balanceAmount").textContent = "Balance: " + balance + " টাকা";
     }
-
 </script>
 
 </body>
