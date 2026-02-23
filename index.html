@@ -1,83 +1,89 @@
-device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Boss Earning System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
+        body{
+            margin:0;
+            font-family:Arial, sans-serif;
+            background:linear-gradient(135deg,#1e3c72,#2a5298);
+            color:white;
+            text-align:center;
         }
 
-        header {
-            background: #111;
-            color: white;
-            text-align: center;
-            padding: 15px;
+        header{
+            padding:15px;
+            font-size:20px;
+            font-weight:bold;
+            background:#111;
         }
 
-        nav {
-            display: flex;
-            justify-content: space-around;
-            background: #222;
+        nav{
+            display:flex;
+            justify-content:space-around;
+            background:#000;
         }
 
-        nav button {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            background: #222;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
+        nav button{
+            flex:1;
+            padding:15px;
+            border:none;
+            background:#000;
+            color:white;
+            cursor:pointer;
         }
 
-        nav button:hover {
-            background: #444;
+        nav button:hover{
+            background:#333;
         }
 
-        .page {
-            display: none;
-            padding: 20px;
-            text-align: center;
+        .page{
+            display:none;
+            padding:20px;
         }
 
-        .active {
-            display: block;
+        .active{
+            display:block;
         }
 
-        .card {
-            background: white;
-            padding: 15px;
-            margin: 10px auto;
-            max-width: 300px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        .card{
+            background:white;
+            color:black;
+            padding:15px;
+            margin:15px auto;
+            max-width:300px;
+            border-radius:10px;
         }
 
-        .btn {
-            padding: 8px 15px;
-            background: green;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .btn{
+            padding:8px 15px;
+            background:green;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
         }
 
-        .btn:hover {
-            background: darkgreen;
+        .btn:hover{
+            background:darkgreen;
         }
 
-        .balance-box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-            cursor: pointer;
+        .balance-box{
+            background:white;
+            color:black;
+            padding:20px;
+            border-radius:10px;
+            display:inline-block;
+            margin-top:20px;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h2>Boss Online Earning 💰</h2>
+    Boss Online Earning 💰
 </header>
 
 <nav>
@@ -86,75 +92,93 @@ device-width, initial-scale=1.0">
     <button onclick="showPage('balance')">Balance</button>
 </nav>
 
-<!-- Home Page -->
+<!-- Home -->
 <div id="home" class="page active">
     <h3>Buy Package</h3>
 
     <div class="card">
         <h4>Silver Package</h4>
-        <p>Price: 500 টাকা</p>
+        <p>500 টাকা</p>
         <button class="btn" onclick="buyPackage(500)">Buy</button>
     </div>
 
     <div class="card">
         <h4>Gold Package</h4>
-        <p>Price: 1000 টাকা</p>
+        <p>1000 টাকা</p>
         <button class="btn" onclick="buyPackage(1000)">Buy</button>
     </div>
-
 </div>
 
-<!-- Task Page -->
+<!-- Task -->
 <div id="task" class="page">
     <h3>Available Tasks</h3>
 
     <div class="card">
-        <p>Watch Video - Earn 50 টাকা</p>
+        <p>Watch Video - 50 টাকা</p>
         <button class="btn" onclick="completeTask(50)">Do Task</button>
     </div>
 
     <div class="card">
-        <p>Share Post - Earn 30 টাকা</p>
+        <p>Share Post - 30 টাকা</p>
         <button class="btn" onclick="completeTask(30)">Do Task</button>
     </div>
-
 </div>
 
-<!-- Balance Page -->
+<!-- Balance -->
 <div id="balance" class="page">
     <h3>Your Balance</h3>
-    <div class="balance-box" onclick="showBalance()">
-        Click to See Balance
-        <h2 id="balanceAmount"></h2>
+    <div class="balance-box">
+        <h2 id="balanceAmount">0 টাকা</h2>
+        <button class="btn" onclick="withdraw()">Withdraw</button>
     </div>
 </div>
 
 <script>
-    let balance = 0;
-    let packageBought = false;
+    let balance = localStorage.getItem("balance") 
+        ? parseInt(localStorage.getItem("balance")) 
+        : 0;
 
-    function showPage(pageId) {
-        let pages = document.querySelectorAll('.page');
-        pages.forEach(page => page.classList.remove('active'));
+    let packageBought = localStorage.getItem("packageBought") === "true";
+
+    updateBalance();
+
+    function showPage(pageId){
+        document.querySelectorAll('.page').forEach(p=>{
+            p.classList.remove('active');
+        });
         document.getElementById(pageId).classList.add('active');
     }
 
-    function buyPackage(amount) {
+    function buyPackage(amount){
         alert("Package Purchased: " + amount + " টাকা");
         packageBought = true;
+        localStorage.setItem("packageBought","true");
     }
 
-    function completeTask(amount) {
+    function completeTask(amount){
         if(!packageBought){
             alert("Please buy a package first!");
             return;
         }
         balance += amount;
-        alert("Task Completed! " + amount + " টাকা Added.");
+        localStorage.setItem("balance",balance);
+        updateBalance();
+        alert("Task Completed! +" + amount + " টাকা");
     }
 
-    function showBalance() {
+    function updateBalance(){
         document.getElementById("balanceAmount").textContent = balance + " টাকা";
+    }
+
+    function withdraw(){
+        if(balance <= 0){
+            alert("No balance available!");
+            return;
+        }
+        alert("Withdraw Request Sent!");
+        balance = 0;
+        localStorage.setItem("balance",balance);
+        updateBalance();
     }
 </script>
 
