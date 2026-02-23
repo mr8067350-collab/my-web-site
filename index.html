@@ -1,246 +1,244 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Boss Earning System</title>
+    <title>Boss Premium Earning</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body{
-            margin:0;
-            font-family:Arial, sans-serif;
-            background:linear-gradient(135deg,#1e3c72,#2a5298);
-            color:white;
-            text-align:center;
-        }
-
-        header{
-            padding:15px;
-            font-size:20px;
-            font-weight:bold;
-            background:#111;
-        }
-
-        nav{
-            display:flex;
-            justify-content:space-around;
-            background:#000;
-        }
-
-        nav button{
-            flex:1;
-            padding:15px;
-            border:none;
-            background:#000;
-            color:white;
-            cursor:pointer;
-        }
-
-        nav button:hover{
-            background:#333;
-        }
-
-        .page{
-            display:none;
-            padding:20px;
-        }
-
-        .active{
-            display:block;
-        }
-
-        .card{
-            background:white;
-            color:black;
-            padding:15px;
-            margin:15px auto;
-            max-width:300px;
-            border-radius:10px;
-        }
-
-        .btn{
-            padding:8px 15px;
-            background:green;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-            margin:5px;
-        }
-
-        .btn:hover{
-            background:darkgreen;
-        }
-
-        .balance-box{
-            background:white;
-            color:black;
-            padding:20px;
-            border-radius:10px;
-            display:inline-block;
-            margin-top:20px;
-        }
-
-        input{
-            padding:8px;
-            width:80%;
-            margin:5px 0;
-            border-radius:5px;
-            border:1px solid #ccc;
-        }
-    </style>
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg,#141e30,#243b55);
+    color:white;
+    text-align:center;
+}
+header{
+    padding:15px;
+    background:black;
+    font-weight:bold;
+}
+nav{
+    display:flex;
+    justify-content:space-around;
+    background:#111;
+}
+nav button{
+    flex:1;
+    padding:12px;
+    background:#111;
+    border:none;
+    color:white;
+}
+nav button:hover{background:#333;}
+.page{display:none;padding:20px;}
+.active{display:block;}
+.card{
+    background:white;
+    color:black;
+    padding:15px;
+    margin:15px auto;
+    max-width:320px;
+    border-radius:12px;
+}
+.btn{
+    padding:8px 15px;
+    background:green;
+    color:white;
+    border:none;
+    border-radius:6px;
+    margin:5px;
+}
+.btn:hover{background:darkgreen;}
+input{
+    padding:8px;
+    width:80%;
+    margin:5px;
+    border-radius:6px;
+    border:none;
+}
+.logout{
+    background:red;
+}
+.balanceBox{
+    font-size:18px;
+    margin-top:10px;
+}
+</style>
 </head>
+
 <body>
 
-<header>
-    Boss Online Earning 💰
-</header>
+<header>Boss Premium Earning 💎</header>
+
+<!-- LOGIN -->
+<div id="loginPage" class="page active">
+    <h3>Login</h3>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button class="btn" onclick="login()">Login</button>
+</div>
+
+<!-- MAIN -->
+<div id="mainContent" style="display:none;">
 
 <nav>
     <button onclick="showPage('home')">Home</button>
     <button onclick="showPage('task')">Task</button>
-    <button onclick="showPage('balance')">Balance</button>
+    <button onclick="showPage('wallet')">Wallet</button>
+    <button class="logout" onclick="logout()">Logout</button>
 </nav>
 
-<!-- Home Page (All package in one page) -->
+<!-- HOME -->
 <div id="home" class="page active">
-    <h3>Buy Package (Invest)</h3>
+    <h3>Buy Package</h3>
 
     <div class="card">
-        <h4>Mini Package</h4>
-        <p>Invest 200 টাকা → 🏦 Islamiya Bank</p>
-        <button class="btn" onclick="buyPackage(200,'bank')">Invest Bank</button>
+        <p>200 টাকা → 🏦 Islamiya Bank</p>
+        <button class="btn" onclick="buyPackage(200)">Buy 200</button>
     </div>
 
     <div class="card">
-        <h4>Silver Package</h4>
-        <p>Invest 500 টাকা → 🥚 Egg</p>
-        <button class="btn" onclick="buyPackage(500,'egg')">Invest Egg</button>
+        <p>500 টাকা → 🥚 Egg</p>
+        <button class="btn" onclick="buyPackage(500)">Buy 500</button>
     </div>
 
     <div class="card">
-        <h4>Gold Package</h4>
-        <p>Invest 1000 টাকা → 🐄 Cow</p>
-        <button class="btn" onclick="buyPackage(1000,'cow')">Invest Cow</button>
+        <p>1000 টাকা → 🐄 Cow</p>
+        <button class="btn" onclick="buyPackage(1000)">Buy 1000</button>
     </div>
 </div>
 
-<!-- Task Page -->
+<!-- TASK -->
 <div id="task" class="page">
-    <h3>Available Tasks</h3>
-    <div id="taskContent">
-        <!-- Task content auto generate -->
+    <h3>Tasks</h3>
+    <div id="taskArea"></div>
+</div>
+
+<!-- WALLET -->
+<div id="wallet" class="page">
+    <h3>Wallet</h3>
+
+    <div class="card">
+        <input type="number" id="depositAmount" placeholder="Deposit Amount">
+        <button class="btn" onclick="deposit()">Deposit</button>
+    </div>
+
+    <div class="card">
+        <input type="number" id="withdrawAmount" placeholder="Withdraw Amount">
+        <button class="btn" onclick="withdraw()">Withdraw</button>
+    </div>
+
+    <div class="balanceBox">
+        Balance: <span id="balanceDisplay">0</span> টাকা
     </div>
 </div>
 
-<!-- Balance Page -->
-<div id="balance" class="page">
-    <h3>Deposit & Withdraw</h3>
-    <div class="balance-box">
-        <input type="number" id="depositAmount" placeholder="Enter Deposit Amount">
-        <br>
-        <button class="btn" onclick="deposit()">Deposit</button>
-        <button class="btn" onclick="withdraw()">Withdraw</button>
-        <h2 id="balanceAmount">Balance: 0 টাকা</h2>
-    </div>
 </div>
 
 <script>
-    let balance = localStorage.getItem("balance") 
-        ? parseInt(localStorage.getItem("balance")) 
-        : 0;
 
-    let packageBought = localStorage.getItem("packageBought") === "true";
-    let packageType = localStorage.getItem("packageType") || '';
+let balance = parseInt(localStorage.getItem("balance")) || 0;
+let packageBought = localStorage.getItem("packageBought") === "true";
+let savedUser = localStorage.getItem("username");
 
+if(savedUser){
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("mainContent").style.display="block";
+}
+
+updateBalance();
+loadTask();
+
+function login(){
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if(user && pass){
+        localStorage.setItem("username",user);
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("mainContent").style.display="block";
+    }else{
+        alert("Enter Username & Password");
+    }
+}
+
+function logout(){
+    localStorage.clear();
+    location.reload();
+}
+
+function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(id==="task") loadTask();
+}
+
+function buyPackage(amount){
+    if(balance < amount){
+        alert("Not enough balance!");
+        return;
+    }
+    balance -= amount;
+    packageBought = true;
+    localStorage.setItem("packageBought","true");
+    localStorage.setItem("balance",balance);
     updateBalance();
-    toggleTask();
+    alert("Package Purchased!");
+}
 
-    function showPage(pageId){
-        document.querySelectorAll('.page').forEach(p=>{
-            p.classList.remove('active');
-        });
-        document.getElementById(pageId).classList.add('active');
-        if(pageId==='task') toggleTask();
+function loadTask(){
+    let area = document.getElementById("taskArea");
+    if(!packageBought){
+        area.innerHTML = "<p style='color:red'>Buy package first!</p>";
+    }else{
+        area.innerHTML = `
+        <div class="card">
+        <p>Complete Task → 10 টাকা</p>
+        <button class="btn" onclick="completeTask()">Do Task</button>
+        </div>
+        `;
     }
+}
 
-    function buyPackage(amount,type){
-        alert(Package Invested: ${amount} টাকা → ${type==='bank'?'🏦 Islamiya Bank': type==='egg'?'🥚 Egg':'🐄 Cow'});
-        packageBought = true;
-        packageType = type;
-        localStorage.setItem("packageBought","true");
-        localStorage.setItem("packageType",type);
-        toggleTask();
+function completeTask(){
+    balance += 10;
+    localStorage.setItem("balance",balance);
+    updateBalance();
+    alert("Task Completed +10 টাকা");
+}
+
+function deposit(){
+    let amount = parseInt(document.getElementById("depositAmount").value);
+    if(!amount || amount<=0){
+        alert("Enter valid amount");
+        return;
     }
+    balance += amount;
+    localStorage.setItem("balance",balance);
+    updateBalance();
+    alert("Deposit Successful");
+}
 
-    function toggleTask(){
-        const taskDiv = document.getElementById("taskContent");
-        if(!packageBought){
-            taskDiv.innerHTML = "<p style='color:red'>Please buy a package to unlock tasks.</p>";
-        } else {
-            taskDiv.innerHTML = `
-                <div class="card">
-                    <p>Watch Video - 10 টাকা</p>
-                    <button class="btn" onclick="completeTask(10)">Do Task</button>
-                </div>
-                <div class="card">
-                    <p>Share Post - 15 টাকা</p>
-                    <button class="btn" onclick="completeTask(15)">Do Task</button>
-                </div>
-                <p>Invested Package: ${packageType==='bank'?'🏦 Islamiya Bank': packageType==='egg'?'🥚 Egg':'🐄 Cow'}</p>
-            `;
-        }
+function withdraw(){
+    let amount = parseInt(document.getElementById("withdrawAmount").value);
+    if(!amount || amount < 100){
+        alert("Minimum Withdraw 100 টাকা");
+        return;
     }
-
-    function completeTask(amount){
-        if(!packageBought){
-            alert("Please buy a package first!");
-            return;
-        }
-        balance += amount;
-        localStorage.setItem("balance",balance);
-        updateBalance();
-        alert("Task Completed! +" + amount + " টাকা");
+    if(amount > balance){
+        alert("Insufficient Balance");
+        return;
     }
+    balance -= amount;
+    localStorage.setItem("balance",balance);
+    updateBalance();
+    alert("Withdraw Successful");
+}
 
-    function deposit(){
-        let amount = parseInt(document.getElementById("depositAmount").value);
-        if(isNaN(amount) || amount <= 0){
-            alert("Enter valid deposit amount!");
-            return;
-        }
-        balance += amount;
-        localStorage.setItem("balance",balance);
-        updateBalance();
-        document.getElementById("depositAmount").value = "";
-        alert(amount + " টাকা Deposit Successful!");
-    }
+function updateBalance(){
+    document.getElementById("balanceDisplay").innerText = balance;
+}
 
-    function withdraw(){
-        if(balance < 100){
-            alert("আপনার balance কম, Withdraw করতে হলে কমপক্ষে 100 টাকা থাকতে হবে!");
-            return;
-        }
-
-        let amount = parseInt(prompt("Enter amount to withdraw (min 100 টাকা):"));
-        
-        if(isNaN(amount) || amount < 100){
-            alert("Withdraw amount কমপক্ষে 100 টাকা হতে হবে!");
-            return;
-        }
-        if(amount > balance){
-            alert("আপনার balance এর চেয়ে বেশি amount দিতে পারবেন না!");
-            return;
-        }
-
-        balance -= amount;
-        localStorage.setItem("balance",balance);
-        updateBalance();
-        alert(amount + " টাকা Withdraw Successful!");
-    }
-
-    function updateBalance(){
-        document.getElementById("balanceAmount").textContent = "Balance: " + balance + " টাকা";
-    }
 </script>
 
 </body>
