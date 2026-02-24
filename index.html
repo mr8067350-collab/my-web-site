@@ -9,21 +9,19 @@ body{margin:0;font-family:Arial;background:linear-gradient(135deg,#ff9a9e,#fad0c
 
 /* Topbar */
 .topbar{display:flex;justify-content:space-between;align-items:center;background:white;padding:15px 20px;border-radius:10px;position:relative;flex-wrap:wrap;}
-.menu-dot{font-size:22px;cursor:pointer;}
+.menu-dot{font-size:22px;cursor:pointer;order:-1;} /* left side */
 .dropdown{display:none;position:absolute;top:50px;left:20px;background:black;color:white;min-width:150px;border-radius:5px;z-index:10;}
 .dropdown a{display:block;color:white;padding:10px;text-decoration:none;}
 .dropdown a:hover{background:#333;}
 .right-section{display:flex;align-items:center;gap:20px;position:relative;}
 .balance{font-weight:bold;color:green;font-size:18px;cursor:pointer;}
 
-/* Package Cards */
+/* Package Cards Vertical */
 .card{background:white;padding:20px;margin-top:20px;border-radius:10px;overflow:hidden;}
-.package-container{display:flex;overflow-x:auto;scroll-behavior:smooth;gap:15px;padding-bottom:10px;}
-.package-container::-webkit-scrollbar{display:none;}
-.package{min-width:250px;flex:0 0 auto;background:#f9f9f9;border-radius:10px;padding:15px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 0 8px rgba(0,0,0,0.2);}
+.package{width:100%;background:#f9f9f9;border-radius:10px;padding:15px;display:flex;flex-direction:row;align-items:center;gap:15px;margin-bottom:15px;box-shadow:0 0 8px rgba(0,0,0,0.2);}
 .package img{width:80px;height:80px;border-radius:10px;}
-.package h4{margin:0;text-align:center;}
-.package .expiry{font-size:12px;color:red;text-align:center;}
+.package h4{margin:0;flex:1;font-size:18px;font-weight:bold;}
+.package .expiry{font-size:12px;color:red;}
 .package button{padding:8px 12px;background:black;color:white;border:none;border-radius:5px;cursor:pointer;}
 .package button:hover{background:#444;}
 
@@ -68,10 +66,10 @@ button.full:hover{background:#444;}
 <!-- MAIN DASHBOARD -->
 <div id="mainPage" style="display:none;">
 <div class="topbar">
-<h3>Dashboard</h3>
+<div class="menu-dot" onclick="toggleMenu()">⋮</div>
 <div class="right-section">
 <div class="balance" onclick="withdraw()">Withdraw</div>
-<div class="menu-dot" onclick="toggleMenu()">⋮</div>
+</div>
 <div class="dropdown" id="dropdownMenu">
 <a href="#" onclick="showSection('depositCard')">Deposit</a>
 <a href="#" onclick="showSection('referralCard')">Referral Code</a>
@@ -79,43 +77,45 @@ button.full:hover{background:#444;}
 <a href="#" onclick="logout()">Logout</a>
 </div>
 </div>
-</div>
 
 <div class="main">
 <!-- Packages -->
 <div class="card" id="packagesCard">
 <h3>Packages</h3>
-<div class="package-container" id="packageSlider">
+
 <div class="package">
 <img src="https://i.ibb.co/WFZGsmZ/silver.png" alt="Silver">
 <h4>Silver: 250 Tk, 10% Cashback, Daily 11 Tk, Referral 20 Tk</h4>
 <div class="expiry" id="expiry-Silver"></div>
 <button onclick="buyPackage('Silver')">Buy</button>
 </div>
+
 <div class="package">
 <img src="https://i.ibb.co/47d6V5k/gold.png" alt="Gold">
 <h4>Gold: 550 Tk, 80 Tk Cashback, Daily 25 Tk, Referral 35 Tk</h4>
 <div class="expiry" id="expiry-Gold"></div>
 <button onclick="buyPackage('Gold')">Buy</button>
 </div>
+
 <div class="package">
 <img src="https://i.ibb.co/qYf1hnM/platinum.png" alt="Platinum">
 <h4>Platinum: 1050 Tk, 200 Tk Cashback, Daily 40 Tk, Referral 50 Tk</h4>
 <div class="expiry" id="expiry-Platinum"></div>
 <button onclick="buyPackage('Platinum')">Buy</button>
 </div>
+
 <div class="package">
 <img src="https://i.ibb.co/tMFx3xR/diamond.png" alt="Diamond">
 <h4>Diamond: 1550 Tk, 350 Tk Cashback, Daily 50 Tk, Referral 100 Tk</h4>
 <div class="expiry" id="expiry-Diamond"></div>
 <button onclick="buyPackage('Diamond')">Buy</button>
 </div>
+
 <div class="package">
 <img src="https://i.ibb.co/8zdwJ9M/premium.png" alt="Premium">
 <h4>Premium: 2250 Tk, 500 Tk Cashback, Daily 80 Tk, Referral 150 Tk</h4>
 <div class="expiry" id="expiry-Premium"></div>
 <button onclick="buyPackage('Premium')">Buy</button>
-</div>
 </div>
 </div>
 
@@ -189,13 +189,7 @@ loadDashboard();
 function loadDashboard(){loginBox.style.display="none";registerBox.style.display="none";adminLoginBox.style.display="none";mainPage.style.display="block";startDailyIncome();startExpiryCountdown();}
 
 // Packages Buy
-const packages={
-"Silver":{cost:250,daily:11,ref:20,cashback:25},
-"Gold":{cost:550,daily:25,ref:35,cashback:80},
-"Platinum":{cost:1050,daily:40,ref:50,cashback:200},
-"Diamond":{cost:1550,daily:50,ref:100,cashback:350},
-"Premium":{cost:2250,daily:80,ref:150,cashback:500}
-};
+const packages={"Silver":{cost:250,daily:11,ref:20,cashback:25},"Gold":{cost:550,daily:25,ref:35,cashback:80},"Platinum":{cost:1050,daily:40,ref:50,cashback:200},"Diamond":{cost:1550,daily:50,ref:100,cashback:350},"Premium":{cost:2250,daily:80,ref:150,cashback:500}};
 
 function buyPackage(name){
 let user=localStorage.getItem("currentUser");
@@ -221,7 +215,6 @@ updateBalance();
 function startExpiryCountdown(){setInterval(()=>{
 let user=localStorage.getItem("currentUser");
 if(!user) return;
-let data=JSON.parse(localStorage.getItem(user));
 ["Silver","Gold","Platinum","Diamond","Premium"].forEach(p=>{
 let el=document.getElementById("expiry-"+p);
 if(data.package===p && data.expiry){
@@ -233,7 +226,7 @@ else{let days=Math.floor(diff/(24*3600)),hours=Math.floor((diff%(24*3600))/3600)
 },1000);}
 
 // Balance / Withdraw
-function updateBalance(){let user=localStorage.getItem("currentUser");let data=JSON.parse(localStorage.getItem(user));document.getElementById("balance").innerText="Withdraw";}
+function updateBalance(){let user=localStorage.getItem("currentUser");let data=JSON.parse(localStorage.getItem(user));document.querySelector(".balance").innerText="Withdraw";}
 function withdraw(){let amt=prompt("Enter withdraw amount (min 100):");if(!amt||amt<100){alert("Minimum 100 Tk");return;}let user=localStorage.getItem("currentUser");let data=JSON.parse(localStorage.getItem(user));if(amt>data.balance){alert("Not enough balance!");return;}data.balance-=parseInt(amt);localStorage.setItem(user,JSON.stringify(data));alert("Withdraw Successful!");}
 
 // Deposit / Referral / Change Pass / Logout
