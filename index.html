@@ -4,29 +4,30 @@
 <title>Business Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:Arial;background:#f1f1f1;}
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1);background-size:400% 400%;animation:grad 15s ease infinite;}
+@keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 /* Sidebar */
-.sidebar{
-width:250px;height:100vh;background:black;color:white;position:fixed;padding-top:20px;
-}
+.sidebar{width:250px;height:100vh;background:black;color:white;position:fixed;padding-top:20px;transition:0.3s;}
 .sidebar h2{text-align:center;margin-bottom:30px;}
 .sidebar a{display:block;color:white;padding:15px;text-decoration:none;}
 .sidebar a:hover{background:#333;}
 /* Main */
-.main{margin-left:250px;padding:20px;}
+.main{margin-left:250px;padding:20px;transition:0.3s;}
 .topbar{display:flex;justify-content:space-between;align-items:center;background:white;padding:15px 20px;border-radius:10px;}
 .right-section{display:flex;align-items:center;gap:20px;position:relative;}
-.balance{font-weight:bold;color:green;font-size:18px;}
-.menu-dot{font-size:22px;cursor:pointer;}
+.balance{font-weight:bold;color:green;font-size:18px;cursor:pointer;}
 .card{background:white;padding:20px;margin-top:20px;border-radius:10px;}
 button{width:100%;padding:10px;margin-top:15px;background:black;color:white;border:none;border-radius:5px;cursor:pointer;}
 button:hover{background:#444;}
 .package{padding:10px;margin-top:10px;background:#f9f9f9;border-radius:5px;}
 input{width:100%;padding:10px;margin-top:10px;border-radius:5px;border:1px solid #ccc;}
-.dropdown{display:none;position:absolute;top:40px;right:0;background:#1c1c1c;color:white;border-radius:5px;width:200px;}
-.dropdown div{padding:10px 15px;cursor:pointer;}
-.dropdown div:hover{background:#333;}
-#loginBox,#registerBox,#adminLoginBox{background:white;padding:20px;border-radius:10px;width:300px;margin:50px auto;}
+/* Responsive */
+@media(max-width:768px){
+.sidebar{width:100%;height:auto;position:relative;}
+.main{margin-left:0;}
+.topbar{flex-direction:column;align-items:flex-start;}
+}
+#loginBox,#registerBox,#adminLoginBox{background:white;padding:20px;border-radius:10px;width:90%;max-width:350px;margin:50px auto;}
 .toggleLink{color:lightgreen;cursor:pointer;margin-top:10px;display:inline-block;}
 </style>
 </head>
@@ -62,7 +63,10 @@ input{width:100%;padding:10px;margin-top:10px;border-radius:5px;border:1px solid
 <div id="mainPage" style="display:none;">
 <div class="sidebar">
 <h2>Menu</h2>
-<a href="#" onclick="toggleMenu()">Menu</a>
+<a href="#" onclick="showSection('packagesCard')">Packages</a>
+<a href="#" onclick="showSection('depositCard')">Deposit</a>
+<a href="#" onclick="showSection('referralCard')">Referral Code</a>
+<a href="#" onclick="changePass()">Change Password</a>
 <a href="#" onclick="logout()">Logout</a>
 </div>
 
@@ -70,25 +74,33 @@ input{width:100%;padding:10px;margin-top:10px;border-radius:5px;border:1px solid
 <div class="topbar">
 <h3>Dashboard</h3>
 <div class="right-section">
-<div class="balance" id="balance">Balance: ৳ 0</div>
-<div class="menu-dot" onclick="toggleDropdown()">⋮</div>
-<div class="dropdown" id="dropdownMenu">
-<div onclick="showDeposit()">Deposit</div>
-<div onclick="withdraw()">Withdraw</div>
-<div onclick="changePass()">Change Password</div>
-<div onclick="showReferral()">Referral Code</div>
-</div>
+<div class="balance" onclick="withdraw()">Withdraw</div>
 </div>
 </div>
 
-<!-- Packages Only -->
+<!-- Packages -->
 <div class="card" id="packagesCard">
 <h3>Packages</h3>
-<div class="package">Silver Package – 10% Cashback</div>
-<div class="package">Gold Package – 80 TK Cashback</div>
-<div class="package">Platinum Package – 200 TK Cashback</div>
-<div class="package">Diamond Package – 350 TK Cashback</div>
-<div class="package">Premium Package – 500 TK Cashback</div>
+<div class="package">
+<b>Silver Package:</b> 250 Tk, 10% Cashback, Daily 11 Tk, Referral 20 Tk
+<button onclick="buyPackage('Silver')">Buy</button>
+</div>
+<div class="package">
+<b>Gold Package:</b> 550 Tk, 80 Tk Cashback, Daily 25 Tk, Referral 35 Tk
+<button onclick="buyPackage('Gold')">Buy</button>
+</div>
+<div class="package">
+<b>Platinum Package:</b> 1050 Tk, 200 Tk Cashback, Daily 40 Tk, Referral 50 Tk
+<button onclick="buyPackage('Platinum')">Buy</button>
+</div>
+<div class="package">
+<b>Diamond Package:</b> 1550 Tk, 350 Tk Cashback, Daily 50 Tk, Referral 100 Tk
+<button onclick="buyPackage('Diamond')">Buy</button>
+</div>
+<div class="package">
+<b>Premium Package:</b> 2250 Tk, 500 Tk Cashback, Daily 80 Tk, Referral 150 Tk
+<button onclick="buyPackage('Premium')">Buy</button>
+</div>
 </div>
 
 <!-- Deposit -->
@@ -131,12 +143,20 @@ function showRegister(){loginBox.style.display="none";registerBox.style.display=
 function showLogin(){loginBox.style.display="block";registerBox.style.display="none";adminLoginBox.style.display="none";}
 function showAdminLogin(){loginBox.style.display="none";registerBox.style.display="none";adminLoginBox.style.display="block";}
 
+// Show only selected section
+function showSection(id){
+packagesCard.style.display="none";
+depositCard.style.display="none";
+referralCard.style.display="none";
+document.getElementById(id).style.display="block";
+}
+
 // Local Storage Users
 function register(){
 let user=regUser.value,pass=regPass.value,ref=refCode.value;
 if(!user||!pass){alert("Fill all fields");return;}
 if(localStorage.getItem(user)){alert("User exists!");return;}
-let data={password:pass,balance:0};
+let data={password:pass,balance:0,package:null,dailyIncome:0};
 localStorage.setItem(user,JSON.stringify(data));
 // Referral bonus
 if(ref && localStorage.getItem(ref)){
@@ -163,25 +183,52 @@ loginBox.style.display="none";
 registerBox.style.display="none";
 adminLoginBox.style.display="none";
 mainPage.style.display="block";
-packagesCard.style.display="block";
-depositCard.style.display="none";
-referralCard.style.display="none";
+showSection('packagesCard');
+startDailyIncome();
+}
+
+// Packages Buy
+const packages={
+"Silver":{cost:250,daily:11,ref:20,cashback:25},
+"Gold":{cost:550,daily:25,ref:35,cashback:80},
+"Platinum":{cost:1050,daily:40,ref:50,cashback:200},
+"Diamond":{cost:1550,daily:50,ref:100,cashback:350},
+"Premium":{cost:2250,daily:80,ref:150,cashback:500}
+};
+
+function buyPackage(name){
+let user=localStorage.getItem("currentUser");
+let data=JSON.parse(localStorage.getItem(user));
+if(data.balance<packages[name].cost){alert("Not enough balance!");return;}
+data.balance-=packages[name].cost;
+data.package=name;
+data.dailyIncome=packages[name].daily;
+data.balance+=packages[name].cashback; // Cashback instantly
+localStorage.setItem(user,JSON.stringify(data));
+alert(name+" Package Bought! Daily income added: "+packages[name].daily+" Tk");
 updateBalance();
+}
+
+function startDailyIncome(){
+setInterval(()=>{
+let user=localStorage.getItem("currentUser");
+if(!user) return;
+let data=JSON.parse(localStorage.getItem(user));
+if(data.dailyIncome) data.balance+=data.dailyIncome;
+localStorage.setItem(user,JSON.stringify(data));
+updateBalance();
+}, 60000); // For demo, every 60 sec = 1 day
 }
 
 function updateBalance(){
 let user=localStorage.getItem("currentUser");
 let data=JSON.parse(localStorage.getItem(user));
-document.getElementById("balance").innerText="Balance: ৳ "+data.balance;
+document.getElementById("balance").innerText="Withdraw";
 }
 
-// Menu Dropdown
-function toggleDropdown(){
-let d=document.getElementById("dropdownMenu");
-d.style.display=d.style.display==="block"?"none":"block";
-}
-function showDeposit(){depositCard.style.display="block";referralCard.style.display="none";}
-function showReferral(){referralCard.style.display="block";depositCard.style.display="none";}
+// Deposit / Referral / Withdraw
+function submitDeposit(){alert("Deposit request submitted (demo).");}
+function applyReferral(){alert("Referral code applied (demo).");}
 function withdraw(){
 let amt=prompt("Enter withdraw amount (min 100):");
 if(!amt||amt<100){alert("Minimum 100 Tk");return;}
@@ -190,9 +237,10 @@ let data=JSON.parse(localStorage.getItem(user));
 if(amt>data.balance){alert("Not enough balance!");return;}
 data.balance-=parseInt(amt);
 localStorage.setItem(user,JSON.stringify(data));
-updateBalance();
 alert("Withdraw Successful!");
 }
+
+// Change password
 function changePass(){
 let np=prompt("New password:");
 if(np){
@@ -203,10 +251,11 @@ localStorage.setItem(user,JSON.stringify(data));
 alert("Password Changed!");
 }
 }
+
 function logout(){localStorage.removeItem("currentUser");location.reload();}
 
 // Admin Login
-const adminPassword="admin123"; // Change as needed
+const adminPassword="admin123";
 function adminLogin(){
 let pass=document.getElementById("adminPass").value;
 if(pass!==adminPassword){alert("Wrong Admin Password!");return;}
@@ -224,7 +273,7 @@ updateUserTable();
 
 function updateUserTable(){
 let table=document.getElementById("userTable");
-table.innerHTML="<tr><th>User</th><th>Balance</th><th>Action</th></tr>";
+table.innerHTML="<tr><th>User</th><th>Balance</th><th>Package</th><th>Action</th></tr>";
 for(let i=0;i<localStorage.length;i++){
 let key=localStorage.key(i);
 if(key==="currentUser")continue;
@@ -232,18 +281,15 @@ let data=JSON.parse(localStorage.getItem(key));
 let row=table.insertRow();
 row.insertCell(0).innerText=key;
 row.insertCell(1).innerText=data.balance;
+row.insertCell(2).innerText=data.package||"-";
 let btn=document.createElement("button");
 btn.innerText="Add 100";
 btn.onclick=function(){data.balance+=100;localStorage.setItem(key,JSON.stringify(data));updateUserTable();};
-row.insertCell(2).appendChild(btn);
+row.insertCell(3).appendChild(btn);
 }
 }
 
 function adminLogout(){adminPage.style.display="none";showLogin();}
-
-// Demo Deposit & Referral
-function submitDeposit(){alert("Deposit request submitted (demo).");}
-function applyReferral(){alert("Referral code applied (demo).");}
 
 // Auto login if user exists
 if(localStorage.getItem("currentUser")){loadDashboard();}
