@@ -15,21 +15,19 @@ width:250px;height:100vh;background:black;color:white;position:fixed;padding-top
 /* Main */
 .main{margin-left:250px;padding:20px;}
 .topbar{display:flex;justify-content:space-between;align-items:center;background:white;padding:15px 20px;border-radius:10px;}
-.right-section{display:flex;align-items:center;gap:20px;}
+.right-section{display:flex;align-items:center;gap:20px;position:relative;}
 .balance{font-weight:bold;color:green;font-size:18px;}
 .menu-dot{font-size:22px;cursor:pointer;}
 .card{background:white;padding:20px;margin-top:20px;border-radius:10px;}
-input{width:100%;padding:10px;margin-top:10px;border-radius:5px;border:1px solid #ccc;}
 button{width:100%;padding:10px;margin-top:15px;background:black;color:white;border:none;border-radius:5px;cursor:pointer;}
 button:hover{background:#444;}
 .package{padding:10px;margin-top:10px;background:#f9f9f9;border-radius:5px;}
+input{width:100%;padding:10px;margin-top:10px;border-radius:5px;border:1px solid #ccc;}
+.dropdown{display:none;position:absolute;top:40px;right:0;background:#1c1c1c;color:white;border-radius:5px;width:200px;}
+.dropdown div{padding:10px 15px;cursor:pointer;}
+.dropdown div:hover{background:#333;}
 #loginBox,#registerBox,#adminLoginBox{background:white;padding:20px;border-radius:10px;width:300px;margin:50px auto;}
 .toggleLink{color:lightgreen;cursor:pointer;margin-top:10px;display:inline-block;}
-.dropdown{display:none;position:absolute;right:20px;top:55px;background:#1c1c1c;color:white;border-radius:5px;}
-.dropdown div{padding:10px 20px;cursor:pointer;}
-.dropdown div:hover{background:#333;}
-.userTable{width:100%;border-collapse:collapse;}
-.userTable th, .userTable td{border:1px solid #ccc;padding:8px;text-align:center;}
 </style>
 </head>
 <body>
@@ -64,9 +62,7 @@ button:hover{background:#444;}
 <div id="mainPage" style="display:none;">
 <div class="sidebar">
 <h2>Menu</h2>
-<a href="#">Home</a>
-<a href="#">Packages</a>
-<a href="#">Deposit</a>
+<a href="#" onclick="toggleMenu()">Menu</a>
 <a href="#" onclick="logout()">Logout</a>
 </div>
 
@@ -77,14 +73,16 @@ button:hover{background:#444;}
 <div class="balance" id="balance">Balance: ৳ 0</div>
 <div class="menu-dot" onclick="toggleDropdown()">⋮</div>
 <div class="dropdown" id="dropdownMenu">
+<div onclick="showDeposit()">Deposit</div>
 <div onclick="withdraw()">Withdraw</div>
 <div onclick="changePass()">Change Password</div>
+<div onclick="showReferral()">Referral Code</div>
 </div>
 </div>
 </div>
 
-<!-- Packages -->
-<div class="card">
+<!-- Packages Only -->
+<div class="card" id="packagesCard">
 <h3>Packages</h3>
 <div class="package">Silver Package – 10% Cashback</div>
 <div class="package">Gold Package – 80 TK Cashback</div>
@@ -94,7 +92,7 @@ button:hover{background:#444;}
 </div>
 
 <!-- Deposit -->
-<div class="card">
+<div class="card" id="depositCard" style="display:none">
 <h3>Deposit System</h3>
 <p><b>bKash:</b> 01XXXXXXXXX</p>
 <p><b>Nagad:</b> 01XXXXXXXXX</p>
@@ -105,11 +103,12 @@ button:hover{background:#444;}
 </div>
 
 <!-- Referral -->
-<div class="card">
+<div class="card" id="referralCard" style="display:none">
 <h3>Referral Code</h3>
 <input type="text" id="userRef" placeholder="Enter Referral Code">
 <button onclick="applyReferral()">Apply Referral</button>
 </div>
+
 </div>
 
 <!-- ADMIN DASHBOARD -->
@@ -164,6 +163,9 @@ loginBox.style.display="none";
 registerBox.style.display="none";
 adminLoginBox.style.display="none";
 mainPage.style.display="block";
+packagesCard.style.display="block";
+depositCard.style.display="none";
+referralCard.style.display="none";
 updateBalance();
 }
 
@@ -173,15 +175,13 @@ let data=JSON.parse(localStorage.getItem(user));
 document.getElementById("balance").innerText="Balance: ৳ "+data.balance;
 }
 
-// Deposit & Referral
-function submitDeposit(){alert("Deposit request submitted (demo).");}
-function applyReferral(){alert("Referral code applied (demo).");}
-
-// 3 dot menu
+// Menu Dropdown
 function toggleDropdown(){
 let d=document.getElementById("dropdownMenu");
 d.style.display=d.style.display==="block"?"none":"block";
 }
+function showDeposit(){depositCard.style.display="block";referralCard.style.display="none";}
+function showReferral(){referralCard.style.display="block";depositCard.style.display="none";}
 function withdraw(){
 let amt=prompt("Enter withdraw amount (min 100):");
 if(!amt||amt<100){alert("Minimum 100 Tk");return;}
@@ -234,16 +234,16 @@ row.insertCell(0).innerText=key;
 row.insertCell(1).innerText=data.balance;
 let btn=document.createElement("button");
 btn.innerText="Add 100";
-btn.onclick=function(){
-data.balance+=100;
-localStorage.setItem(key,JSON.stringify(data));
-updateUserTable();
-};
+btn.onclick=function(){data.balance+=100;localStorage.setItem(key,JSON.stringify(data));updateUserTable();};
 row.insertCell(2).appendChild(btn);
 }
 }
 
 function adminLogout(){adminPage.style.display="none";showLogin();}
+
+// Demo Deposit & Referral
+function submitDeposit(){alert("Deposit request submitted (demo).");}
+function applyReferral(){alert("Referral code applied (demo).");}
 
 // Auto login if user exists
 if(localStorage.getItem("currentUser")){loadDashboard();}
