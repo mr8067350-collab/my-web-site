@@ -1,30 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Project Farming - Boss</title>
+<title>Business Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{font-family:Arial;margin:0;padding:0;text-align:center;background:black;color:white;}
-.box{background:#1c1c1c;width:300px;margin:15px auto;padding:15px;border-radius:10px;box-shadow:0 0 10px #333;}
-button{padding:8px 15px;background:green;color:white;border:none;border-radius:5px;cursor:pointer;margin:5px;}
-input{width:90%;padding:8px;margin:8px 0;border-radius:5px;border:1px solid #444;background:#111;color:white;}
-.top{background:#111;color:white;padding:15px;position:relative;}
-.menu{position:absolute;left:15px;top:15px;font-size:22px;cursor:pointer;}
-.dropdown{display:none;position:absolute;left:15px;top:50px;background:#1c1c1c;box-shadow:0 0 10px #333;border-radius:5px;}
-.dropdown div{padding:10px 20px;cursor:pointer;color:white;}
+body{margin:0;font-family:Arial;background:#f1f1f1;}
+/* Sidebar */
+.sidebar{
+width:250px;height:100vh;background:black;color:white;position:fixed;padding-top:20px;
+}
+.sidebar h2{text-align:center;margin-bottom:30px;}
+.sidebar a{display:block;color:white;padding:15px;text-decoration:none;}
+.sidebar a:hover{background:#333;}
+/* Main */
+.main{margin-left:250px;padding:20px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;background:white;padding:15px 20px;border-radius:10px;}
+.right-section{display:flex;align-items:center;gap:20px;}
+.balance{font-weight:bold;color:green;font-size:18px;}
+.menu-dot{font-size:22px;cursor:pointer;}
+.card{background:white;padding:20px;margin-top:20px;border-radius:10px;}
+input{width:100%;padding:10px;margin-top:10px;border-radius:5px;border:1px solid #ccc;}
+button{width:100%;padding:10px;margin-top:15px;background:black;color:white;border:none;border-radius:5px;cursor:pointer;}
+button:hover{background:#444;}
+.package{padding:10px;margin-top:10px;background:#f9f9f9;border-radius:5px;}
+#loginBox,#registerBox,#adminLoginBox{background:white;padding:20px;border-radius:10px;width:300px;margin:50px auto;}
+.toggleLink{color:lightgreen;cursor:pointer;margin-top:10px;display:inline-block;}
+.dropdown{display:none;position:absolute;right:20px;top:55px;background:#1c1c1c;color:white;border-radius:5px;}
+.dropdown div{padding:10px 20px;cursor:pointer;}
 .dropdown div:hover{background:#333;}
+.userTable{width:100%;border-collapse:collapse;}
+.userTable th, .userTable td{border:1px solid #ccc;padding:8px;text-align:center;}
 </style>
 </head>
 <body>
 
 <!-- LOGIN / REGISTER -->
-<div id="authBox" class="box">
 <div id="loginBox">
 <h3>Login</h3>
 <input type="text" id="loginUser" placeholder="User ID"><br>
 <input type="password" id="loginPass" placeholder="Password"><br>
-<button onclick="login()">Login</button><br><br>
-<span style="color:lightgreen;cursor:pointer;" onclick="showRegister()">New user? Register</span>
+<button onclick="login()">Login</button><br>
+<span class="toggleLink" onclick="showRegister()">New user? Register</span><br>
+<span class="toggleLink" onclick="showAdminLogin()">Admin Login</span>
 </div>
 
 <div id="registerBox" style="display:none;">
@@ -32,83 +49,106 @@ input{width:90%;padding:8px;margin:8px 0;border-radius:5px;border:1px solid #444
 <input type="text" id="regUser" placeholder="User ID"><br>
 <input type="password" id="regPass" placeholder="Password"><br>
 <input type="text" id="refCode" placeholder="Referral Code (Optional)"><br>
-<button onclick="register()">Register</button><br><br>
-<span style="color:lightgreen;cursor:pointer;" onclick="showLogin()">Already have account? Login</span>
-</div>
+<button onclick="register()">Register</button><br>
+<span class="toggleLink" onclick="showLogin()">Already have account? Login</span>
 </div>
 
-<!-- MAIN -->
+<div id="adminLoginBox" style="display:none;">
+<h3>Admin Login</h3>
+<input type="password" id="adminPass" placeholder="Admin Password"><br>
+<button onclick="adminLogin()">Login as Admin</button><br>
+<span class="toggleLink" onclick="showLogin()">Back to User Login</span>
+</div>
+
+<!-- MAIN DASHBOARD -->
 <div id="mainPage" style="display:none;">
-<div class="top">
-<span class="menu" onclick="toggleMenu()">☰</span>
-🌾 Project Farming <br>
-Balance: <span id="balance">0</span> Tk
-<div class="dropdown" id="menuBox">
-<div onclick="goWithdraw()">Withdraw</div>
+<div class="sidebar">
+<h2>Menu</h2>
+<a href="#">Home</a>
+<a href="#">Packages</a>
+<a href="#">Deposit</a>
+<a href="#" onclick="logout()">Logout</a>
+</div>
+
+<div class="main">
+<div class="topbar">
+<h3>Dashboard</h3>
+<div class="right-section">
+<div class="balance" id="balance">Balance: ৳ 0</div>
+<div class="menu-dot" onclick="toggleDropdown()">⋮</div>
+<div class="dropdown" id="dropdownMenu">
+<div onclick="withdraw()">Withdraw</div>
 <div onclick="changePass()">Change Password</div>
-<div onclick="logout()">Logout</div>
+</div>
+</div>
+</div>
+
+<!-- Packages -->
+<div class="card">
+<h3>Packages</h3>
+<div class="package">Silver Package – 10% Cashback</div>
+<div class="package">Gold Package – 80 TK Cashback</div>
+<div class="package">Platinum Package – 200 TK Cashback</div>
+<div class="package">Diamond Package – 350 TK Cashback</div>
+<div class="package">Premium Package – 500 TK Cashback</div>
+</div>
+
+<!-- Deposit -->
+<div class="card">
+<h3>Deposit System</h3>
+<p><b>bKash:</b> 01XXXXXXXXX</p>
+<p><b>Nagad:</b> 01XXXXXXXXX</p>
+<p><b>Rocket:</b> 01XXXXXXXXX</p>
+<input type="text" id="depositAmount" placeholder="Enter Amount">
+<input type="text" id="transactionId" placeholder="Transaction ID">
+<button onclick="submitDeposit()">Submit Deposit Request</button>
+</div>
+
+<!-- Referral -->
+<div class="card">
+<h3>Referral Code</h3>
+<input type="text" id="userRef" placeholder="Enter Referral Code">
+<button onclick="applyReferral()">Apply Referral</button>
 </div>
 </div>
 
-<div class="box">
-<h3>🥈 Silver - 250 Tk</h3>
-10% Cashback (25 Tk)<br>Daily 11 Tk<br>Referral 20 Tk<br>
-<button onclick="buy(250,11,25)">Buy</button>
+<!-- ADMIN DASHBOARD -->
+<div id="adminPage" style="display:none;">
+<div class="sidebar">
+<h2>Admin Panel</h2>
+<a href="#" onclick="adminLogout()">Logout</a>
 </div>
-
-<div class="box">
-<h3>🥇 Gold - 550 Tk</h3>
-80 Tk Cashback<br>Daily 25 Tk<br>Referral 35 Tk<br>
-<button onclick="buy(550,25,80)">Buy</button>
+<div class="main">
+<h3>All Users</h3>
+<table class="userTable" id="userTable">
+<tr><th>User</th><th>Balance</th><th>Action</th></tr>
+</table>
 </div>
-
-<div class="box">
-<h3>🏆 Platinum - 1050 Tk</h3>
-200 Tk Cashback<br>Daily 40 Tk<br>Referral 50 Tk<br>
-<button onclick="buy(1050,40,200)">Buy</button>
-</div>
-
-<div class="box">
-<h3>💎 Diamond - 1550 Tk</h3>
-350 Tk Cashback<br>Daily 50 Tk<br>Referral 100 Tk<br>
-<button onclick="buy(1550,50,350)">Buy</button>
-</div>
-
-<div class="box">
-<h3>👑 Premium - 2250 Tk</h3>
-500 Tk Cashback<br>Daily 80 Tk<br>Referral 150 Tk<br>
-<button onclick="buy(2250,80,500)">Buy</button>
-</div>
-
 </div>
 
 <script>
+// Toggle Login/Register/Admin
+function showRegister(){loginBox.style.display="none";registerBox.style.display="block";adminLoginBox.style.display="none";}
+function showLogin(){loginBox.style.display="block";registerBox.style.display="none";adminLoginBox.style.display="none";}
+function showAdminLogin(){loginBox.style.display="none";registerBox.style.display="none";adminLoginBox.style.display="block";}
 
-// Toggle
-function showRegister(){loginBox.style.display="none";registerBox.style.display="block";}
-function showLogin(){registerBox.style.display="none";loginBox.style.display="block";}
-
-// Register
+// Local Storage Users
 function register(){
 let user=regUser.value,pass=regPass.value,ref=refCode.value;
 if(!user||!pass){alert("Fill all fields");return;}
 if(localStorage.getItem(user)){alert("User exists!");return;}
-
-let data={password:pass,balance:0,dailyIncome:0,lastClaim:Date.now()};
+let data={password:pass,balance:0};
 localStorage.setItem(user,JSON.stringify(data));
-
 // Referral bonus
 if(ref && localStorage.getItem(ref)){
 let refUser=JSON.parse(localStorage.getItem(ref));
-refUser.balance+=50; // default referral bonus
+refUser.balance+=50;
 localStorage.setItem(ref,JSON.stringify(refUser));
 }
-
 alert("Registered Successfully!");
 showLogin();
 }
 
-// Login
 function login(){
 let user=loginUser.value,pass=loginPass.value;
 let data=localStorage.getItem(user);
@@ -116,51 +156,33 @@ if(!data){alert("User not found!");return;}
 data=JSON.parse(data);
 if(data.password!==pass){alert("Wrong password!");return;}
 localStorage.setItem("currentUser",user);
-loadMain();
+loadDashboard();
 }
 
-// Load main
-function loadMain(){
-authBox.style.display="none";
+function loadDashboard(){
+loginBox.style.display="none";
+registerBox.style.display="none";
+adminLoginBox.style.display="none";
 mainPage.style.display="block";
+updateBalance();
+}
+
+function updateBalance(){
 let user=localStorage.getItem("currentUser");
 let data=JSON.parse(localStorage.getItem(user));
-
-// Daily income (24 hour rule)
-let now=Date.now();
-if(now-data.lastClaim>=86400000){
-data.balance+=data.dailyIncome;
-data.lastClaim=now;
-localStorage.setItem(user,JSON.stringify(data));
+document.getElementById("balance").innerText="Balance: ৳ "+data.balance;
 }
 
-balance.innerText=data.balance;
-}
+// Deposit & Referral
+function submitDeposit(){alert("Deposit request submitted (demo).");}
+function applyReferral(){alert("Referral code applied (demo).");}
 
-// Buy
-function buy(price,daily,cashback){
-let user=localStorage.getItem("currentUser");
-let data=JSON.parse(localStorage.getItem(user));
-
-if(data.balance>=price){
-data.balance-=price;
-data.balance+=cashback;
-data.dailyIncome+=daily;
-localStorage.setItem(user,JSON.stringify(data));
-balance.innerText=data.balance;
-alert("Package Purchased! Cashback Added.");
-}else{
-alert("Not Enough Balance!");
+// 3 dot menu
+function toggleDropdown(){
+let d=document.getElementById("dropdownMenu");
+d.style.display=d.style.display==="block"?"none":"block";
 }
-}
-
-// Menu
-function toggleMenu(){
-let m=document.getElementById("menuBox");
-m.style.display=m.style.display==="block"?"none":"block";
-}
-
-function goWithdraw(){
+function withdraw(){
 let amt=prompt("Enter withdraw amount (min 100):");
 if(!amt||amt<100){alert("Minimum 100 Tk");return;}
 let user=localStorage.getItem("currentUser");
@@ -168,10 +190,9 @@ let data=JSON.parse(localStorage.getItem(user));
 if(amt>data.balance){alert("Not enough balance!");return;}
 data.balance-=parseInt(amt);
 localStorage.setItem(user,JSON.stringify(data));
-balance.innerText=data.balance;
+updateBalance();
 alert("Withdraw Successful!");
 }
-
 function changePass(){
 let np=prompt("New password:");
 if(np){
@@ -182,15 +203,50 @@ localStorage.setItem(user,JSON.stringify(data));
 alert("Password Changed!");
 }
 }
+function logout(){localStorage.removeItem("currentUser");location.reload();}
 
-function logout(){
-localStorage.removeItem("currentUser");
-location.reload();
+// Admin Login
+const adminPassword="admin123"; // Change as needed
+function adminLogin(){
+let pass=document.getElementById("adminPass").value;
+if(pass!==adminPassword){alert("Wrong Admin Password!");return;}
+loginBox.style.display="none";
+registerBox.style.display="none";
+adminLoginBox.style.display="none";
+mainPage.style.display="none";
+loadAdmin();
 }
 
-// Auto login
-if(localStorage.getItem("currentUser")){loadMain();}
+function loadAdmin(){
+adminPage.style.display="block";
+updateUserTable();
+}
 
+function updateUserTable(){
+let table=document.getElementById("userTable");
+table.innerHTML="<tr><th>User</th><th>Balance</th><th>Action</th></tr>";
+for(let i=0;i<localStorage.length;i++){
+let key=localStorage.key(i);
+if(key==="currentUser")continue;
+let data=JSON.parse(localStorage.getItem(key));
+let row=table.insertRow();
+row.insertCell(0).innerText=key;
+row.insertCell(1).innerText=data.balance;
+let btn=document.createElement("button");
+btn.innerText="Add 100";
+btn.onclick=function(){
+data.balance+=100;
+localStorage.setItem(key,JSON.stringify(data));
+updateUserTable();
+};
+row.insertCell(2).appendChild(btn);
+}
+}
+
+function adminLogout(){adminPage.style.display="none";showLogin();}
+
+// Auto login if user exists
+if(localStorage.getItem("currentUser")){loadDashboard();}
 </script>
 
 </body>
