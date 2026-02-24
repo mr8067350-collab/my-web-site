@@ -4,70 +4,15 @@
 <title>Project Farming - Boss</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
-font-family:Arial;
-margin:0;
-padding:0;
-text-align:center;
-background:black;
-color:white;
-}
-.box{
-background:#1c1c1c;
-width:300px;
-margin:15px auto;
-padding:15px;
-border-radius:10px;
-box-shadow:0 0 10px #333;
-}
-button{
-padding:8px 15px;
-background:green;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-margin:5px;
-}
-input{
-width:90%;
-padding:8px;
-margin:8px 0;
-border-radius:5px;
-border:1px solid #444;
-background:#111;
-color:white;
-}
-.top{
-background:#111;
-color:white;
-padding:15px;
-position:relative;
-}
-.menu{
-position:absolute;
-left:15px;
-top:15px;
-font-size:22px;
-cursor:pointer;
-}
-.dropdown{
-display:none;
-position:absolute;
-left:15px;
-top:50px;
-background:#1c1c1c;
-box-shadow:0 0 10px #333;
-border-radius:5px;
-}
-.dropdown div{
-padding:10px 20px;
-cursor:pointer;
-color:white;
-}
-.dropdown div:hover{
-background:#333;
-}
+body{font-family:Arial;margin:0;padding:0;text-align:center;background:black;color:white;}
+.box{background:#1c1c1c;width:300px;margin:15px auto;padding:15px;border-radius:10px;box-shadow:0 0 10px #333;}
+button{padding:8px 15px;background:green;color:white;border:none;border-radius:5px;cursor:pointer;margin:5px;}
+input{width:90%;padding:8px;margin:8px 0;border-radius:5px;border:1px solid #444;background:#111;color:white;}
+.top{background:#111;color:white;padding:15px;position:relative;}
+.menu{position:absolute;left:15px;top:15px;font-size:22px;cursor:pointer;}
+.dropdown{display:none;position:absolute;left:15px;top:50px;background:#1c1c1c;box-shadow:0 0 10px #333;border-radius:5px;}
+.dropdown div{padding:10px 20px;cursor:pointer;color:white;}
+.dropdown div:hover{background:#333;}
 </style>
 </head>
 <body>
@@ -92,13 +37,12 @@ background:#333;
 </div>
 </div>
 
-<!-- MAIN PAGE -->
+<!-- MAIN -->
 <div id="mainPage" style="display:none;">
 <div class="top">
 <span class="menu" onclick="toggleMenu()">☰</span>
 🌾 Project Farming <br>
 Balance: <span id="balance">0</span> Tk
-
 <div class="dropdown" id="menuBox">
 <div onclick="goWithdraw()">Withdraw</div>
 <div onclick="changePass()">Change Password</div>
@@ -108,56 +52,59 @@ Balance: <span id="balance">0</span> Tk
 
 <div class="box">
 <h3>🥈 Silver - 250 Tk</h3>
-Daily 11 Tk<br>Referral 20 Tk<br>
-<button onclick="buy(250,11)">Buy</button>
+10% Cashback (25 Tk)<br>Daily 11 Tk<br>Referral 20 Tk<br>
+<button onclick="buy(250,11,25)">Buy</button>
 </div>
 
 <div class="box">
 <h3>🥇 Gold - 550 Tk</h3>
-Daily 25 Tk<br>Referral 35 Tk<br>
-<button onclick="buy(550,25)">Buy</button>
+80 Tk Cashback<br>Daily 25 Tk<br>Referral 35 Tk<br>
+<button onclick="buy(550,25,80)">Buy</button>
 </div>
 
 <div class="box">
 <h3>🏆 Platinum - 1050 Tk</h3>
-Daily 40 Tk<br>Referral 50 Tk<br>
-<button onclick="buy(1050,40)">Buy</button>
+200 Tk Cashback<br>Daily 40 Tk<br>Referral 50 Tk<br>
+<button onclick="buy(1050,40,200)">Buy</button>
 </div>
 
 <div class="box">
 <h3>💎 Diamond - 1550 Tk</h3>
-Daily 50 Tk<br>Referral 100 Tk<br>
-<button onclick="buy(1550,50)">Buy</button>
+350 Tk Cashback<br>Daily 50 Tk<br>Referral 100 Tk<br>
+<button onclick="buy(1550,50,350)">Buy</button>
 </div>
 
 <div class="box">
 <h3>👑 Premium - 2250 Tk</h3>
-Daily 80 Tk<br>Referral 150 Tk<br>
-<button onclick="buy(2250,80)">Buy</button>
+500 Tk Cashback<br>Daily 80 Tk<br>Referral 150 Tk<br>
+<button onclick="buy(2250,80,500)">Buy</button>
 </div>
 
 </div>
 
 <script>
 
-// Toggle forms
-function showRegister(){
-loginBox.style.display="none";
-registerBox.style.display="block";
-}
-function showLogin(){
-registerBox.style.display="none";
-loginBox.style.display="block";
-}
+// Toggle
+function showRegister(){loginBox.style.display="none";registerBox.style.display="block";}
+function showLogin(){registerBox.style.display="none";loginBox.style.display="block";}
 
 // Register
 function register(){
 let user=regUser.value,pass=regPass.value,ref=refCode.value;
 if(!user||!pass){alert("Fill all fields");return;}
 if(localStorage.getItem(user)){alert("User exists!");return;}
-let data={password:pass,balance:0,dailyIncome:0,referral:ref,lastClaim:Date.now()};
+
+let data={password:pass,balance:0,dailyIncome:0,lastClaim:Date.now()};
 localStorage.setItem(user,JSON.stringify(data));
-alert("Registered! Now login.");
+
+// Referral bonus
+if(ref && localStorage.getItem(ref)){
+let refUser=JSON.parse(localStorage.getItem(ref));
+refUser.balance+=50; // default referral bonus
+localStorage.setItem(ref,JSON.stringify(refUser));
+}
+
+alert("Registered Successfully!");
 showLogin();
 }
 
@@ -176,10 +123,10 @@ loadMain();
 function loadMain(){
 authBox.style.display="none";
 mainPage.style.display="block";
-
 let user=localStorage.getItem("currentUser");
 let data=JSON.parse(localStorage.getItem(user));
 
+// Daily income (24 hour rule)
 let now=Date.now();
 if(now-data.lastClaim>=86400000){
 data.balance+=data.dailyIncome;
@@ -191,16 +138,20 @@ balance.innerText=data.balance;
 }
 
 // Buy
-function buy(price,daily){
+function buy(price,daily,cashback){
 let user=localStorage.getItem("currentUser");
 let data=JSON.parse(localStorage.getItem(user));
+
 if(data.balance>=price){
 data.balance-=price;
+data.balance+=cashback;
 data.dailyIncome+=daily;
 localStorage.setItem(user,JSON.stringify(data));
 balance.innerText=data.balance;
-alert("Package Purchased!");
-}else{alert("Not Enough Balance!");}
+alert("Package Purchased! Cashback Added.");
+}else{
+alert("Not Enough Balance!");
+}
 }
 
 // Menu
@@ -237,7 +188,7 @@ localStorage.removeItem("currentUser");
 location.reload();
 }
 
-// Auto login check
+// Auto login
 if(localStorage.getItem("currentUser")){loadMain();}
 
 </script>
